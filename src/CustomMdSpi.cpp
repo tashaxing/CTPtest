@@ -2,13 +2,13 @@
 #include "CustomMdSpi.h"
 
 // ---- 全局参数声明 ---- //
-extern CThostFtdcMdApi *g_pUserApi;              // 行情指针
-extern char gFontAddr[];                         // 模拟行情前置地址
+extern CThostFtdcMdApi *g_pMdUserApi;            // 行情指针
+extern char gMdFrontAddr[];                      // 模拟行情前置地址
 extern TThostFtdcBrokerIDType gBrokerID;         // 模拟经纪商代码
 extern TThostFtdcInvestorIDType gInvesterID;     // 投资者账户名
 extern TThostFtdcPasswordType gInvesterPassword; // 投资者密码
 extern char *g_pInstrumentID[];                  // 行情合约代码列表，中、上、大、郑交易所各选一种
-extern int instrumentNum;                         // 行情合约订阅数量
+extern int instrumentNum;                        // 行情合约订阅数量
 
 // ---- ctp_api回调函数 ---- //
 // 连接成功应答
@@ -22,7 +22,7 @@ void CustomMdSpi::OnFrontConnected()
 	strcpy(loginReq.UserID, gInvesterID);
 	strcpy(loginReq.Password, gInvesterPassword);
 	static int requestID = 0; // 请求编号
-	int rt = g_pUserApi->ReqUserLogin(&loginReq, requestID);
+	int rt = g_pMdUserApi->ReqUserLogin(&loginReq, requestID);
 	if (!rt)
 		std::cout << ">>>>>>发送登录请求成功" << std::endl;
 	else
@@ -59,7 +59,7 @@ void CustomMdSpi::OnRspUserLogin(
 		std::cout << "经纪商： " << pRspUserLogin->BrokerID << std::endl;
 		std::cout << "帐户名： " << pRspUserLogin->UserID << std::endl;
 		// 开始订阅行情
-		int rt = g_pUserApi->SubscribeMarketData(g_pInstrumentID, instrumentNum);
+		int rt = g_pMdUserApi->SubscribeMarketData(g_pInstrumentID, instrumentNum);
 		if (!rt)
 			std::cout << ">>>>>>发送订阅行情请求成功" << std::endl;
 		else
