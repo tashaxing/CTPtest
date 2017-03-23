@@ -14,8 +14,7 @@ char gFontAddr[] = "tcp://180.168.146.187:10010";                  // 模拟行情前
 TThostFtdcBrokerIDType gBrokerID = "9999";                         // 模拟经纪商代码
 TThostFtdcInvestorIDType gInvesterID = "081097";                   // 投资者账户名
 TThostFtdcPasswordType gInvesterPassword = "asdfqwer";             // 投资者密码
-//char *g_pInstrumentID[] = {"TF1706", "al1712", "cs1801", "CF705"}; // 行情合约代码列表，中、上、大、郑交易所各选一种
-char *g_pInstrumentID[] = {"ni1701", "rb1701"};
+char *g_pInstrumentID[] = {"TF1706", "al1712", "cs1801", "CF705"}; // 行情合约代码列表，中、上、大、郑交易所各选一种
 int instrumentNum = 4;                                             // 行情合约订阅数量
 
 int main()
