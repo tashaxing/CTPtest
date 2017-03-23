@@ -1,5 +1,4 @@
 #pragma once
-
 #include "CTP_API/ThostFtdcMdApi.h"
 
 class CustomMdSpi: public CThostFtdcMdSpi
@@ -48,8 +47,5 @@ public:
 
 	///询价通知
 	virtual void OnRtnForQuoteRsp(CThostFtdcForQuoteRspField *pForQuoteRsp);
-
-	// ---- 自己定义的方法 ---- //
-private:
 
 };

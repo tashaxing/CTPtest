@@ -11,25 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\CustomMdSpi.cpp" />
     <ClCompile Include="..\src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\CTP_API\error.dtd" />
-    <None Include="..\src\CTP_API\thostmduserapi.dll" />
-    <None Include="..\src\CTP_API\thosttraderapi.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\src\CTP_API\error.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\CTP_API\ThostFtdcMdApi.h" />
-    <ClInclude Include="..\src\CTP_API\ThostFtdcTraderApi.h" />
-    <ClInclude Include="..\src\CTP_API\ThostFtdcUserApiDataType.h" />
-    <ClInclude Include="..\src\CTP_API\ThostFtdcUserApiStruct.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\src\CTP_API\thostmduserapi.lib" />
-    <Library Include="..\src\CTP_API\thosttraderapi.lib" />
+    <ClInclude Include="..\src\CustomMdSpi.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B6E4CF70-7540-45BB-9DBF-C49EAA6E32E8}</ProjectGuid>
@@ -59,12 +45,16 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>..\src\CTP_API;$(IncludePath)</IncludePath>
+    <LibraryPath>..\src\CTP_API;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

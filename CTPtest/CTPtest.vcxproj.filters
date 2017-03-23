@@ -13,51 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\CTP_API">
-      <UniqueIdentifier>{b9654bf3-0895-4ae1-8f10-9e819b83adce}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CustomMdSpi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\CTP_API\error.dtd">
-      <Filter>头文件\CTP_API</Filter>
-    </None>
-    <None Include="..\src\CTP_API\thostmduserapi.dll">
-      <Filter>头文件\CTP_API</Filter>
-    </None>
-    <None Include="..\src\CTP_API\thosttraderapi.dll">
-      <Filter>头文件\CTP_API</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\src\CTP_API\error.xml">
-      <Filter>头文件\CTP_API</Filter>
-    </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\CTP_API\ThostFtdcMdApi.h">
-      <Filter>头文件\CTP_API</Filter>
+    <ClInclude Include="..\src\CustomMdSpi.h">
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\CTP_API\ThostFtdcTraderApi.h">
-      <Filter>头文件\CTP_API</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\CTP_API\ThostFtdcUserApiDataType.h">
-      <Filter>头文件\CTP_API</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\CTP_API\ThostFtdcUserApiStruct.h">
-      <Filter>头文件\CTP_API</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\src\CTP_API\thostmduserapi.lib">
-      <Filter>头文件\CTP_API</Filter>
-    </Library>
-    <Library Include="..\src\CTP_API\thosttraderapi.lib">
-      <Filter>头文件\CTP_API</Filter>
-    </Library>
   </ItemGroup>
 </Project>
