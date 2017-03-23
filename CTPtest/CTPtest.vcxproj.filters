@@ -21,7 +21,7 @@
     <ClCompile Include="..\src\CustomMdSpi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\CustomTradSpi.cpp">
+    <ClCompile Include="..\src\CustomTradeSpi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
