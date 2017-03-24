@@ -24,7 +24,7 @@ CThostFtdcTraderApi *g_pTradeUserApi = nullptr;                    // 交易指针
 char gTradeFrontAddr[] = "tcp://180.168.146.187:10000";            // 模拟交易前置地址
 TThostFtdcInstrumentIDType g_pTradeInstrumentID = "zn1705";        // 所交易的合约代码
 TThostFtdcDirectionType gTradeDirection = THOST_FTDC_D_Sell;       // 买卖方向
-TThostFtdcPriceType gLimitPrice = 23135;                            // 交易价格
+TThostFtdcPriceType gLimitPrice = 23135;                           // 交易价格
 
 int main()
 {
