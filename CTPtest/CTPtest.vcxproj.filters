@@ -24,12 +24,18 @@
     <ClCompile Include="..\src\CustomTradeSpi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\TickToKlineHelper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\CustomMdSpi.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\src\CustomTradeSpi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\TickToKlineHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

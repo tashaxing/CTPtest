@@ -14,10 +14,12 @@
     <ClCompile Include="..\src\CustomMdSpi.cpp" />
     <ClCompile Include="..\src\CustomTradeSpi.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\TickToKlineHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\CustomMdSpi.h" />
     <ClInclude Include="..\src\CustomTradeSpi.h" />
+    <ClInclude Include="..\src\TickToKlineHelper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B6E4CF70-7540-45BB-9DBF-C49EAA6E32E8}</ProjectGuid>
@@ -27,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
