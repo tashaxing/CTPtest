@@ -1,5 +1,7 @@
 #include <iostream>
 #include <time.h>
+#include <thread>
+#include <chrono>
 #include "CustomTradeSpi.h"
 
 // ---- 全局参数声明 ---- //
@@ -42,6 +44,7 @@ void CustomTradeSpi::OnRspUserLogin(
 		// 保存会话参数
 		trade_front_id = pRspUserLogin->FrontID;
 		session_id = pRspUserLogin->SessionID;
+		strcpy(order_ref, pRspUserLogin->MaxOrderRef);
 
 		// 投资者结算结果确认
 		reqSettlementInfoConfirm();
@@ -108,6 +111,8 @@ void CustomTradeSpi::OnRspQryInstrument(
 		std::cout << "合约代码： " << pInstrument->InstrumentID << std::endl;
 		std::cout << "合约在交易所的代码： " << pInstrument->ExchangeInstID << std::endl;
 		std::cout << "执行价： " << pInstrument->StrikePrice << std::endl;
+		std::cout << "到期日： " << pInstrument->EndDelivDate << std::endl;
+		std::cout << "当前交易状态： " << pInstrument->IsTrading << std::endl;
 		// 请求查询投资者资金账户
 		reqQueryTradingAccount();
 	}
@@ -141,12 +146,18 @@ void CustomTradeSpi::OnRspQryInvestorPosition(
 	if (!isErrorRspInfo(pRspInfo))
 	{
 		std::cout << "=====查询投资者持仓成功=====" << std::endl;
-		std::cout << "合约代码： " << pInvestorPosition->InstrumentID << std::endl;
-		std::cout << "开仓价格： " << pInvestorPosition->OpenAmount << std::endl;
-		std::cout << "开仓量： " << pInvestorPosition->OpenVolume << std::endl;
-		std::cout << "开仓方向： " << pInvestorPosition->PosiDirection << std::endl;
-		std::cout << "占用保证金：" << pInvestorPosition->UseMargin << std::endl;
-		// 保单录入请求
+		if (pInvestorPosition)
+		{
+			std::cout << "合约代码： " << pInvestorPosition->InstrumentID << std::endl;
+			std::cout << "开仓价格： " << pInvestorPosition->OpenAmount << std::endl;
+			std::cout << "开仓量： " << pInvestorPosition->OpenVolume << std::endl;
+			std::cout << "开仓方向： " << pInvestorPosition->PosiDirection << std::endl;
+			std::cout << "占用保证金：" << pInvestorPosition->UseMargin << std::endl;
+		}
+		else
+			std::cout << "----->该合约未持仓" << std::endl;
+		
+		// 报单录入请求
 		reqOrderInsert();
 	}
 }
@@ -269,6 +280,7 @@ void CustomTradeSpi::reqQueryTradingAccount()
 	strcpy(tradingAccountReq.BrokerID, gBrokerID);
 	strcpy(tradingAccountReq.InvestorID, gInvesterID);
 	static int requestID = 0; // 请求编号
+	std::this_thread::sleep_for(std::chrono::milliseconds(700)); // 有时候需要停顿一会才能查询成功
 	int rt = g_pTradeUserApi->ReqQryTradingAccount(&tradingAccountReq, requestID);
 	if (!rt)
 		std::cout << ">>>>>>发送投资者资金账户查询请求成功" << std::endl;
@@ -284,6 +296,7 @@ void CustomTradeSpi::reqQueryInvestorPosition()
 	strcpy(postionReq.InvestorID, gInvesterID);
 	strcpy(postionReq.InstrumentID, g_pTradeInstrumentID);
 	static int requestID = 0; // 请求编号
+	std::this_thread::sleep_for(std::chrono::milliseconds(700)); // 有时候需要停顿一会才能查询成功
 	int rt = g_pTradeUserApi->ReqQryInvestorPosition(&postionReq, requestID);
 	if (!rt)
 		std::cout << ">>>>>>发送投资者持仓查询请求成功" << std::endl;

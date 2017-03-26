@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "CustomMdSpi.h"
 
 // ---- 全局参数声明 ---- //
@@ -107,6 +108,21 @@ void CustomMdSpi::OnRspSubMarketData(
 	{
 		std::cout << "=====订阅行情成功=====" << std::endl;
 		std::cout << "合约代码： " << pSpecificInstrument->InstrumentID << std::endl;
+		// 如果需要存入文件或者数据库，在这里创建表头
+		std::ofstream outFile;
+		outFile.open("market_data.csv", std::ios::out); // 新开文件
+		outFile << "合约代码" << ","
+			<< "更新时间" << ","
+			<< "最新价" << ","
+			<< "成交量" << ","
+			<< "买价一" << ","
+			<< "买量一" << ","
+			<< "买价一" << ","
+			<< "卖价一" << ","
+			<< "卖量一" << ","
+			<< "换手率" 
+			<< std::endl;
+		outFile.close();
 	}
 	else
 		std::cerr << "返回错误--->>> ErrorID=" << pRspInfo->ErrorID << ", ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
@@ -169,6 +185,21 @@ void CustomMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMar
 	std::cout << "合约代码： " << pDepthMarketData->InstrumentID << std::endl;
 	std::cout << "合约在交易所的代码： " << pDepthMarketData->ExchangeInstID << std::endl;
 	std::cout << "最新价： " << pDepthMarketData->LastPrice << std::endl;
+	std::cout << "数量： " << pDepthMarketData->Volume << std::endl;
+	// 如果只获取某一个合约行情，可以逐tick地存入文件或数据库
+	std::ofstream outFile;
+	outFile.open("market_data.csv", std::ios::app); // 文件追加写入 
+	outFile << pDepthMarketData->InstrumentID << "," 
+		<< pDepthMarketData->UpdateTime << "." << pDepthMarketData->UpdateMillisec << "," 
+		<< pDepthMarketData->LastPrice << "," 
+		<< pDepthMarketData->Volume << "," 
+		<< pDepthMarketData->BidPrice1 << "," 
+		<< pDepthMarketData->BidVolume1 << "," 
+		<< pDepthMarketData->AskPrice1 << "," 
+		<< pDepthMarketData->AskVolume1 << "," 
+		<< pDepthMarketData->OpenInterest << "," 
+		<< pDepthMarketData->Turnover << std::endl;
+	outFile.close();
 }
 
 // 询价详情通知
