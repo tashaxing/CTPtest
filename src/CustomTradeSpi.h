@@ -1,5 +1,5 @@
 #pragma once
-
+// ---- 派生的交易类 ---- //
 #include "CTP_API/ThostFtdcTraderApi.h"
 
 class CustomTradeSpi : public CThostFtdcTraderSpi
@@ -49,13 +49,22 @@ public:
 	void OnRtnTrade(CThostFtdcTradeField *pTrade);
 	
 // ---- 自定义函数 ---- //
+public:
+	bool loginFlag; // 登陆成功的标识
+	void CustomTradeSpi::reqOrderInsert(
+		TThostFtdcInstrumentIDType instrumentID,
+		TThostFtdcPriceType price,
+		TThostFtdcVolumeType volume,
+		TThostFtdcDirectionType direction); // 个性化报单录入，外部调用
 private:
 	void reqUserLogin(); // 登录请求
+	void reqUserLogout(); // 登出请求
 	void reqSettlementInfoConfirm(); // 投资者结果确认
 	void reqQueryInstrument(); // 请求查询合约
 	void reqQueryTradingAccount(); // 请求查询资金帐户
 	void reqQueryInvestorPosition(); // 请求查询投资者持仓
 	void reqOrderInsert(); // 请求报单录入
+	
 	void reqOrderAction(CThostFtdcOrderField *pOrder); // 请求报单操作
 	bool isErrorRspInfo(CThostFtdcRspInfoField *pRspInfo); // 是否收到错误信息
 	bool isMyOrder(CThostFtdcOrderField *pOrder); // 是否我的报单回报

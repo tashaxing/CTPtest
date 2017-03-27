@@ -1,4 +1,5 @@
 #pragma once
+// ---- 派生的行情类 ---- //
 #include "CTP_API/ThostFtdcMdApi.h"
 
 class CustomMdSpi: public CThostFtdcMdSpi

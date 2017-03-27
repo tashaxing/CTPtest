@@ -37,6 +37,7 @@ void CustomTradeSpi::OnRspUserLogin(
 	if (!isErrorRspInfo(pRspInfo))
 	{
 		std::cout << "=====账户登录成功=====" << std::endl;
+		loginFlag = true;
 		std::cout << "交易日： " << pRspUserLogin->TradingDay << std::endl;
 		std::cout << "登录时间： " << pRspUserLogin->LoginTime << std::endl;
 		std::cout << "经纪商： " << pRspUserLogin->BrokerID << std::endl;
@@ -157,8 +158,8 @@ void CustomTradeSpi::OnRspQryInvestorPosition(
 		else
 			std::cout << "----->该合约未持仓" << std::endl;
 		
-		// 报单录入请求
-		reqOrderInsert();
+		// 报单录入请求（这里是一部接口，此处是按顺序执行）
+		//reqOrderInsert();
 	}
 }
 
@@ -200,13 +201,13 @@ void CustomTradeSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
 
 	std::cout << "=====收到报单应答=====" << std::endl;
 
-
 	if (isMyOrder(pOrder))
 	{
 		if (isTradingOrder(pOrder))
 		{
-			//reqOrderAction(pOrder); // 这里可以撤单
 			std::cout << "--->>> 等待成交中！" << std::endl;
+			//reqOrderAction(pOrder); // 这里可以撤单
+			//reqUserLogout(); // 登出测试
 		}
 		else if (pOrder->OrderStatus == THOST_FTDC_OST_Canceled)
 			std::cout << "--->>> 撤单成功！" << std::endl;
@@ -245,6 +246,21 @@ void CustomTradeSpi::reqUserLogin()
 	else
 		std::cerr << "--->>>发送登录请求失败" << std::endl;
 }
+
+void CustomTradeSpi::reqUserLogout()
+{
+	CThostFtdcUserLogoutField logoutReq;
+	memset(&logoutReq, 0, sizeof(logoutReq));
+	strcpy(logoutReq.BrokerID, gBrokerID);
+	strcpy(logoutReq.UserID, gInvesterID);
+	static int requestID = 0; // 请求编号
+	int rt = g_pTradeUserApi->ReqUserLogout(&logoutReq, requestID);
+	if (!rt)
+		std::cout << ">>>>>>发送登出请求成功" << std::endl;
+	else
+		std::cerr << "--->>>发送登出请求失败" << std::endl;
+}
+
 
 void CustomTradeSpi::reqSettlementInfoConfirm()
 {
@@ -346,9 +362,60 @@ void CustomTradeSpi::reqOrderInsert()
 	static int requestID = 0; // 请求编号
 	int rt = g_pTradeUserApi->ReqOrderInsert(&orderInsertReq, ++requestID);
 	if (!rt)
-		std::cout << ">>>>>>发送保单录入请求成功" << std::endl;
+		std::cout << ">>>>>>发送报单录入请求成功" << std::endl;
 	else
-		std::cerr << "--->>>发送保单录入请求失败" << std::endl;
+		std::cerr << "--->>>发送报单录入请求失败" << std::endl;
+}
+
+void CustomTradeSpi::reqOrderInsert(
+	TThostFtdcInstrumentIDType instrumentID,
+	TThostFtdcPriceType price,
+	TThostFtdcVolumeType volume,
+	TThostFtdcDirectionType direction)
+{
+	CThostFtdcInputOrderField orderInsertReq;
+	memset(&orderInsertReq, 0, sizeof(orderInsertReq));
+	///经纪公司代码
+	strcpy(orderInsertReq.BrokerID, gBrokerID);
+	///投资者代码
+	strcpy(orderInsertReq.InvestorID, gInvesterID);
+	///合约代码
+	strcpy(orderInsertReq.InstrumentID, instrumentID);
+	///报单引用
+	strcpy(orderInsertReq.OrderRef, order_ref);
+	///报单价格条件: 限价
+	orderInsertReq.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
+	///买卖方向: 
+	orderInsertReq.Direction = direction;
+	///组合开平标志: 开仓
+	orderInsertReq.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
+	///组合投机套保标志
+	orderInsertReq.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
+	///价格
+	orderInsertReq.LimitPrice = price;
+	///数量：1
+	orderInsertReq.VolumeTotalOriginal = volume;
+	///有效期类型: 当日有效
+	orderInsertReq.TimeCondition = THOST_FTDC_TC_GFD;
+	///成交量类型: 任何数量
+	orderInsertReq.VolumeCondition = THOST_FTDC_VC_AV;
+	///最小成交量: 1
+	orderInsertReq.MinVolume = 1;
+	///触发条件: 立即
+	orderInsertReq.ContingentCondition = THOST_FTDC_CC_Immediately;
+	///强平原因: 非强平
+	orderInsertReq.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;
+	///自动挂起标志: 否
+	orderInsertReq.IsAutoSuspend = 0;
+	///用户强评标志: 否
+	orderInsertReq.UserForceClose = 0;
+
+	static int requestID = 0; // 请求编号
+	int rt = g_pTradeUserApi->ReqOrderInsert(&orderInsertReq, ++requestID);
+	if (!rt)
+		std::cout << ">>>>>>发送报单录入请求成功" << std::endl;
+	else
+		std::cerr << "--->>>发送报单录入请求失败" << std::endl;
 }
 
 void CustomTradeSpi::reqOrderAction(CThostFtdcOrderField *pOrder)

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 #include "CustomMdSpi.h"
+#include "TickToKlineHelper.h"
 
 // ---- 全局参数声明 ---- //
 extern CThostFtdcMdApi *g_pMdUserApi;            // 行情指针
@@ -10,6 +12,7 @@ extern TThostFtdcInvestorIDType gInvesterID;     // 投资者账户名
 extern TThostFtdcPasswordType gInvesterPassword; // 投资者密码
 extern char *g_pInstrumentID[];                  // 行情合约代码列表，中、上、大、郑交易所各选一种
 extern int instrumentNum;                        // 行情合约订阅数量
+extern std::unordered_map<std::string, TickToKlineHelper> g_KlineHash; // k线存储表
 
 // ---- ctp_api回调函数 ---- //
 // 连接成功应答
@@ -108,19 +111,21 @@ void CustomMdSpi::OnRspSubMarketData(
 	{
 		std::cout << "=====订阅行情成功=====" << std::endl;
 		std::cout << "合约代码： " << pSpecificInstrument->InstrumentID << std::endl;
-		// 如果需要存入文件或者数据库，在这里创建表头
+		// 如果需要存入文件或者数据库，在这里创建表头,不同的合约单独存储
+		char filePath[100] = {'\0'};
+		sprintf(filePath, "%s_market_data.csv", pSpecificInstrument->InstrumentID);
 		std::ofstream outFile;
-		outFile.open("market_data.csv", std::ios::out); // 新开文件
+		outFile.open(filePath, std::ios::out); // 新开文件
 		outFile << "合约代码" << ","
 			<< "更新时间" << ","
 			<< "最新价" << ","
 			<< "成交量" << ","
 			<< "买价一" << ","
 			<< "买量一" << ","
-			<< "买价一" << ","
 			<< "卖价一" << ","
 			<< "卖量一" << ","
-			<< "换手率" 
+			<< "持仓量" << ","
+			<< "换手率"
 			<< std::endl;
 		outFile.close();
 	}
@@ -187,8 +192,10 @@ void CustomMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMar
 	std::cout << "最新价： " << pDepthMarketData->LastPrice << std::endl;
 	std::cout << "数量： " << pDepthMarketData->Volume << std::endl;
 	// 如果只获取某一个合约行情，可以逐tick地存入文件或数据库
+	char filePath[100] = {'\0'};
+	sprintf(filePath, "%s_market_data.csv", pDepthMarketData->InstrumentID);
 	std::ofstream outFile;
-	outFile.open("market_data.csv", std::ios::app); // 文件追加写入 
+	outFile.open(filePath, std::ios::app); // 文件追加写入 
 	outFile << pDepthMarketData->InstrumentID << "," 
 		<< pDepthMarketData->UpdateTime << "." << pDepthMarketData->UpdateMillisec << "," 
 		<< pDepthMarketData->LastPrice << "," 
@@ -200,6 +207,17 @@ void CustomMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMar
 		<< pDepthMarketData->OpenInterest << "," 
 		<< pDepthMarketData->Turnover << std::endl;
 	outFile.close();
+
+	// 计算实时k线
+	std::string instrumentKey = std::string(pDepthMarketData->InstrumentID);
+	g_KlineHash[instrumentKey].KLineFromRealtimeData(pDepthMarketData);
+
+	// 取消订阅行情
+	//int rt = g_pMdUserApi->UnSubscribeMarketData(g_pInstrumentID, instrumentNum);
+	//if (!rt)
+	//	std::cout << ">>>>>>发送取消订阅行情请求成功" << std::endl;
+	//else
+	//	std::cerr << "--->>>发送取消订阅行情请求失败" << std::endl;
 }
 
 // 询价详情通知
