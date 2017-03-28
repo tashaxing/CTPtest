@@ -210,7 +210,10 @@ void CustomMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMar
 
 	// 计算实时k线
 	std::string instrumentKey = std::string(pDepthMarketData->InstrumentID);
+	if (g_KlineHash.find(instrumentKey) == g_KlineHash.end())
+		g_KlineHash[instrumentKey] = TickToKlineHelper();
 	g_KlineHash[instrumentKey].KLineFromRealtimeData(pDepthMarketData);
+
 
 	// 取消订阅行情
 	//int rt = g_pMdUserApi->UnSubscribeMarketData(g_pInstrumentID, instrumentNum);

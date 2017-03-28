@@ -1,5 +1,6 @@
 #pragma once
 // ---- 派生的行情类 ---- //
+#include <vector>
 #include "CTP_API/ThostFtdcMdApi.h"
 
 class CustomMdSpi: public CThostFtdcMdSpi
@@ -48,6 +49,5 @@ public:
 
 	///询价通知
 	void OnRtnForQuoteRsp(CThostFtdcForQuoteRspField *pForQuoteRsp);
-
 };
 
