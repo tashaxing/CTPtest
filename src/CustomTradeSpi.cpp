@@ -1,7 +1,6 @@
 #include <iostream>
 #include <time.h>
 #include <thread>
-#include <mutex>
 #include <chrono>
 #include "CustomTradeSpi.h"
 
@@ -21,6 +20,8 @@ TThostFtdcSessionIDType	session_id;	//会话编号
 TThostFtdcOrderRefType	order_ref;	//报单引用
 time_t lOrderTime;
 time_t lOrderOkTime;
+
+
 
 void CustomTradeSpi::OnFrontConnected()
 {
@@ -167,7 +168,7 @@ void CustomTradeSpi::OnRspQryInvestorPosition(
 		//	reqOrderInsert(g_pTradeInstrumentID, gLimitPrice, 1, gTradeDirection); // 自定义一笔交易
 
 		// 策略交易
-		
+		StrategyCheckAndTrade(std::string(g_pTradeInstrumentID))
 	}
 }
 
