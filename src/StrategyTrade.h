@@ -1,9 +1,10 @@
 #pragma once
 // ---- 简单策略交易的类 ---- //
-#include <string>
-#include <unordered_map>
+
+#include <functional>
 #include "CTP_API/ThostFtdcUserApiStruct.h"
 #include "TickToKlineHelper.h"
+#include "CustomTradeSpi.h"
 
 typedef void(*reqOrderInsertFun)(
 	TThostFtdcInstrumentIDType instrumentID,
@@ -11,4 +12,10 @@ typedef void(*reqOrderInsertFun)(
 	TThostFtdcVolumeType volume,
 	TThostFtdcDirectionType direction);
 
-void StrategyCheckAndTrade(std::unordered_map<std::string, TickToKlineHelper> &instrumentRecord, reqOrderInsertFun reqFun);
+using ReqOrderInsertFunctionType = std::function<
+	void(TThostFtdcInstrumentIDType instrumentID,
+	TThostFtdcPriceType price,
+	TThostFtdcVolumeType volume,
+	TThostFtdcDirectionType direction)>;
+
+void StrategyCheckAndTrade(TThostFtdcInstrumentIDType instrumentID, CustomTradeSpi *customTradeSpi);

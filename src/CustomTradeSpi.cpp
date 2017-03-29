@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include "CustomTradeSpi.h"
+#include "StrategyTrade.h"
 
 // ---- 全局参数声明 ---- //
 extern TThostFtdcBrokerIDType gBrokerID;                      // 模拟经纪商代码
@@ -165,10 +166,12 @@ void CustomTradeSpi::OnRspQryInvestorPosition(
 		/*if (loginFlag)
 			reqOrderInsert();*/
 		//if (loginFlag)
-		//	reqOrderInsert(g_pTradeInstrumentID, gLimitPrice, 1, gTradeDirection); // 自定义一笔交易
+		//	reqOrderInsertWithParams(g_pTradeInstrumentID, gLimitPrice, 1, gTradeDirection); // 自定义一笔交易
 
 		// 策略交易
-		StrategyCheckAndTrade(std::string(g_pTradeInstrumentID))
+		std::cout << "=====开始进入策略交易=====" << std::endl;
+		while (loginFlag)
+			StrategyCheckAndTrade(g_pTradeInstrumentID, this);
 	}
 }
 

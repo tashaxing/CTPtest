@@ -51,7 +51,7 @@ public:
 // ---- 自定义函数 ---- //
 public:
 	bool loginFlag; // 登陆成功的标识
-	void CustomTradeSpi::reqOrderInsert(
+	void reqOrderInsert(
 		TThostFtdcInstrumentIDType instrumentID,
 		TThostFtdcPriceType price,
 		TThostFtdcVolumeType volume,

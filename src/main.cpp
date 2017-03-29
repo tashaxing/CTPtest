@@ -20,7 +20,7 @@ TThostFtdcPasswordType gInvesterPassword = "asdfqwer";             // 投资者密码
 // 行情参数
 CThostFtdcMdApi *g_pMdUserApi = nullptr;                           // 行情指针
 char gMdFrontAddr[] = "tcp://180.168.146.187:10010";               // 模拟行情前置地址
-char *g_pInstrumentID[] = {"TF1706", "al1712", "cs1801", "CF705"}; // 行情合约代码列表，中、上、大、郑交易所各选一种
+char *g_pInstrumentID[] = {"TF1706", "zn1705", "cs1801", "CF705"}; // 行情合约代码列表，中、上、大、郑交易所各选一种
 int instrumentNum = 4;                                             // 行情合约订阅数量
 unordered_map<string, TickToKlineHelper> g_KlineHash;              // 不同合约的k线存储表
 
@@ -41,25 +41,28 @@ int main()
 	g_pMdUserApi->RegisterFront(gMdFrontAddr);           // 设置行情前置地址
 	g_pMdUserApi->Init();                                // 连接
 	
+
+
+	// 初始化交易线程
+	cout << "初始化交易..." << endl;
+	g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi();
+	//CThostFtdcTraderSpi *pTradeSpi = new CustomTradeSpi;
+	CustomTradeSpi *pTradeSpi = new CustomTradeSpi;
+	g_pTradeUserApi->RegisterSpi(pTradeSpi);
+	g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);
+	g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);
+	g_pTradeUserApi->RegisterFront(gTradeFrontAddr);
+	g_pTradeUserApi->Init();
+		
+
 	// 等到线程退出
 	g_pMdUserApi->Join();
 	delete pMdUserSpi;
 	g_pMdUserApi->Release();
 
-	//// 初始化交易线程
-	//cout << "初始化交易..." << endl;
-	//g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi();
-	////CThostFtdcTraderSpi *pTradeSpi = new CustomTradeSpi;
-	//CustomTradeSpi *pTradeSpi = new CustomTradeSpi;
-	//g_pTradeUserApi->RegisterSpi(pTradeSpi);
-	//g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);
-	//g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);
-	//g_pTradeUserApi->RegisterFront(gTradeFrontAddr);
-	//g_pTradeUserApi->Init();
-	//	
-	//g_pTradeUserApi->Join();
-	//delete pTradeSpi;
-	//g_pTradeUserApi->Release();
+	g_pTradeUserApi->Join();
+	delete pTradeSpi;
+	g_pTradeUserApi->Release();
 
 	// 转换本地k线数据
 	//TickToKlineHelper tickToKlineHelper;
