@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include <unordered_map>
 #include "CustomMdSpi.h"
@@ -14,8 +15,8 @@ using namespace std;
 // ---- 全局变量 ---- //
 // 公共参数
 TThostFtdcBrokerIDType gBrokerID = "9999";                         // 模拟经纪商代码
-TThostFtdcInvestorIDType gInvesterID = "081097";                   // 投资者账户名
-TThostFtdcPasswordType gInvesterPassword = "asdfqwer";             // 投资者密码
+TThostFtdcInvestorIDType gInvesterID = "";                   // 投资者账户名
+TThostFtdcPasswordType gInvesterPassword = "";             // 投资者密码
 
 // 行情参数
 CThostFtdcMdApi *g_pMdUserApi = nullptr;                           // 行情指针
@@ -33,26 +34,32 @@ TThostFtdcPriceType gLimitPrice = 22735;                           // 交易价格
 
 int main()
 {
+	// 账号密码
+	cout << "请输入账号： ";
+	scanf("%s", gInvesterID);
+	cout << "请输入密码： ";
+	scanf("%s", gInvesterPassword);
+
 	// 初始化行情线程
 	cout << "初始化行情..." << endl;
 	g_pMdUserApi = CThostFtdcMdApi::CreateFtdcMdApi();   // 创建行情实例
 	CThostFtdcMdSpi *pMdUserSpi = new CustomMdSpi;       // 创建行情回调实例
 	g_pMdUserApi->RegisterSpi(pMdUserSpi);               // 注册事件类
 	g_pMdUserApi->RegisterFront(gMdFrontAddr);           // 设置行情前置地址
-	g_pMdUserApi->Init();                                // 连接
+	g_pMdUserApi->Init();                                // 连接运行
 	
 
 
 	// 初始化交易线程
 	cout << "初始化交易..." << endl;
-	g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi();
+	g_pTradeUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(); // 创建交易实例
 	//CThostFtdcTraderSpi *pTradeSpi = new CustomTradeSpi;
-	CustomTradeSpi *pTradeSpi = new CustomTradeSpi;
-	g_pTradeUserApi->RegisterSpi(pTradeSpi);
-	g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);
-	g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);
-	g_pTradeUserApi->RegisterFront(gTradeFrontAddr);
-	g_pTradeUserApi->Init();
+	CustomTradeSpi *pTradeSpi = new CustomTradeSpi;               // 创建交易回调实例
+	g_pTradeUserApi->RegisterSpi(pTradeSpi);                      // 注册事件类
+	g_pTradeUserApi->SubscribePublicTopic(THOST_TERT_RESTART);    // 订阅公共流
+	g_pTradeUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);   // 订阅私有流
+	g_pTradeUserApi->RegisterFront(gTradeFrontAddr);              // 设置交易前置地址
+	g_pTradeUserApi->Init();                                      // 连接运行
 		
 
 	// 等到线程退出
