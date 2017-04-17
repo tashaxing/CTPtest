@@ -15,8 +15,8 @@ using namespace std;
 // ---- 全局变量 ---- //
 // 公共参数
 TThostFtdcBrokerIDType gBrokerID = "9999";                         // 模拟经纪商代码
-TThostFtdcInvestorIDType gInvesterID = "";                   // 投资者账户名
-TThostFtdcPasswordType gInvesterPassword = "";             // 投资者密码
+TThostFtdcInvestorIDType gInvesterID = "";                         // 投资者账户名
+TThostFtdcPasswordType gInvesterPassword = "";                     // 投资者密码
 
 // 行情参数
 CThostFtdcMdApi *g_pMdUserApi = nullptr;                           // 行情指针
