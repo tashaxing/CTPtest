@@ -1,5 +1,6 @@
 # CTPtest
 用ctp官方接口写的一个简单demo，具备行情、交易、k线数据以及策略功能，可以连接simnow模拟交易~
+编译环境windows  + vs2015
 # 博客地址
 http://blog.csdn.net/u012234115/article/details/70195889
 # 截图
